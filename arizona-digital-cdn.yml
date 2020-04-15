@@ -1,23 +1,23 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: CDN for Arizona Digital
 Parameters:
-  SiteCert:
+  CDNCert:
     Type: String
     Description: The ARN of the certificate uploaded to ACM in us-east-1
-  SiteDomain:
+  CDNDomain:
     Type: String
     Description: The domain for the Arizona Digital CDN
-  SiteTTL:
+  CDNTTL:
     Type: Number
     Default: 3600
     Description: The defualt TTL for the cloudfront distribution
 Resources:
   CDNBucket:
     Type: AWS::S3::Bucket
-    Properties:
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: error.html
+    # Properties:
+    #   WebsiteConfiguration:
+    #     IndexDocument: index.html
+    #     ErrorDocument: error.html
 
   CDNBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -77,12 +77,12 @@ Resources:
       DistributionConfig:
         DefaultRootObject: index.html
         Aliases:
-          - !Ref SiteDomain
+          - !Ref CDNDomain
         Enabled: "true"
         PriceClass: PriceClass_All
         HttpVersion: http2
         ViewerCertificate:
-          AcmCertificateArn: !Ref SiteCert
+          AcmCertificateArn: !Ref CDNCert
           SslSupportMethod: sni-only
           MinimumProtocolVersion: TLSv1.2_2018
         Origins:
@@ -91,7 +91,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CDNBucketOriginOAI}"
         DefaultCacheBehavior:
-          DefaultTTL: !Ref SiteTTL
+          DefaultTTL: !Ref CDNTTL
           Compress: "true"
           TargetOriginId: CDNBucketOrigin
           ForwardedValues:
