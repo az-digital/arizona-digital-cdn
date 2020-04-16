@@ -1,7 +1,7 @@
-# Arizona Digital Review Site
+# Arizona Digital CDN
 
 This repository contains the CloudFormation template to deploy the infrastructure
-required to host the Arizona Digital review site over HTTPS.
+required to host the Arizona Digital CDN over HTTPS.
 
 ## Manual Steps
 - Before initial deploy, you must create a certificate in ACM in the us-east-1 region
