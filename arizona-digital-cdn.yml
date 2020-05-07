@@ -14,7 +14,17 @@ Parameters:
 Resources:
   CDNBucket:
     Type: AWS::S3::Bucket
-    # Properties:
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          -
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - HEAD
+            AllowedOrigins:
+              - '*'
     #   WebsiteConfiguration:
     #     IndexDocument: index.html
     #     ErrorDocument: error.html
@@ -90,12 +100,19 @@ Resources:
             Id: CDNBucketOrigin
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CDNBucketOriginOAI}"
+            OriginCustomHeaders:
+              -
+                HeaderName: Origin
+                HeaderValue: CloudFront
         DefaultCacheBehavior:
           DefaultTTL: !Ref CDNTTL
           Compress: "true"
           TargetOriginId: CDNBucketOrigin
           ForwardedValues:
-            QueryString: "false"
+            QueryString: false
             Cookies:
               Forward: none
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
           ViewerProtocolPolicy: redirect-to-https
